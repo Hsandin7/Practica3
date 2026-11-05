@@ -1,8 +1,8 @@
 import express from "express";
-import filmsRoutes from "./routes/films.routes.js"
+import tebeoRoutes from "./routes/tebeo.routes.js"
 import { connectAlMonguito } from "./config/database.js";
-import { configCollection } from "./controllers/films.controller.js";
-import type { FilmT } from "./models/film.model.js";
+import { configCollection } from "./controllers/tebeo.controller.js";
+import type { TebeoT } from "./models/tebeo.model.js";
 import type { Collection } from "mongodb";
 
 
@@ -11,11 +11,11 @@ app.use(express.json());
 
 const startServer = () => {
     connectAlMonguito().then((baseDeDatos) => {
-        const filmCollection: Collection<FilmT> = baseDeDatos.collection("peliculones")
+        const tebeoCollection: Collection<TebeoT> = baseDeDatos.collection("tebeos")
 
-        configCollection(filmCollection);
+        configCollection(tebeoCollection);
         
-        app.use("/films", filmsRoutes);
+        app.use("/tebeo", tebeoRoutes);
         
         app.listen(3000, ()=> {
             console.log("Api funcionando en el puerto 3000");

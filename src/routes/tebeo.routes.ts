@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteTebeo, getTebeo, getTebeoWithId, postTebeo, putTebeo } from "../controllers/films.controller.js";
+import { deleteTebeo, getTebeo, getTebeoWithId, postTebeo, putTebeo } from "../controllers/tebeo.controller.js";
 
 
 
@@ -15,8 +15,6 @@ router.post("/", postTebeo);
 router.put("/:id", putTebeo);
 
 router.delete("/:id", deleteTebeo);
-
-// router.patch("/:id", patchFilm);
 
 
 export default router;

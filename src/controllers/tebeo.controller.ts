@@ -1,7 +1,5 @@
-// createTebeos -> Falta comprobacion de tipos, status 400
-
 import type { Request, Response } from "express";
-import type { ErrorAPI, TebeoT } from "../models/film.model.js";
+import type { ErrorAPI, TebeoT } from "../models/tebeo.model.js";
 import { ObjectId, type Collection } from "mongodb";
 
 
@@ -24,12 +22,12 @@ const validacionTipos = (req: Request, res: Response): boolean => {
         }
     });
 
-    if (Number.isInteger(req.body.numero) || req.body.numero === "") {
+    if (!Number.isInteger(req.body.numero) || req.body.numero <= 0) {
         res.status(400).json(error)
         return false;
     }
 
-    if (typeof req.body.precio !== "number" || req.body.precio === "") {
+    if (typeof req.body.precio !== "number" || req.body.precio < 0) {
         res.status(400).json(error)
         return false;
     }
@@ -46,7 +44,7 @@ export const getTebeo = (
         res.json(result);
     }).catch(() => {
         res.status(500).json({
-            message: "Ha habido un error al buscar los Tebeos"
+            message: "Error interno del servidor"
         });
     });
 };
@@ -69,15 +67,15 @@ export const getTebeoWithId = (
         _id: new ObjectId(id)
     }).then((tebeo) => {
         if(!tebeo){
-            res.status(404).json({
-                message: "No hay un Tebeo con ese id"
-            });
+            const error: ErrorAPI = {error: "Tebeo no encontrado"}
+            res.status(404).json(error);
             return;
         };
         res.json(tebeo);
     }).catch(() => {
-        const error: ErrorAPI = {error: "Error no encontrado"}
-        res.status(500).json(error);
+        res.status(500).json({
+            message: "Error interno del servidor"
+        });
     });
 };
 
@@ -86,7 +84,8 @@ export const postTebeo = (
     req: Request,
     res: Response
 ) => {
-    
+    if (!validacionTipos(req,res)){ return; }
+
     const newTebeo: TebeoT = {
         titulo: req.body.titulo,
         autor: req.body.autor,
@@ -114,6 +113,8 @@ export const putTebeo = (
     req: Request,
     res: Response
 ) => {
+    if (!validacionTipos(req,res)){ return; }
+    
     const id = String(req.params.id);
 
     if(!ObjectId.isValid(id)){
@@ -135,7 +136,7 @@ export const putTebeo = (
     }).then((tebeo) => {
         if (tebeo.matchedCount === 0){
             res.status(404).json({
-                message: "No hay Tebeo con ese id"
+                message: "El tebeo no existe"
             });
             return;
         };
