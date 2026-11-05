@@ -15,7 +15,7 @@ const startServer = () => {
 
         configCollection(tebeoCollection);
         
-        app.use("/tebeo", tebeoRoutes);
+        app.use("/tebeos", tebeoRoutes);
         
         app.listen(3000, ()=> {
             console.log("Api funcionando en el puerto 3000");
